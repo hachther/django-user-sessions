@@ -53,6 +53,8 @@ class SessionMiddleware(MiddlewareMixin):
                 # Save the session data and refresh the client cookie.
                 # Skip session save for 500 responses, refs #3881.
                 if response.status_code != 500:
+                    if '_auth_user_id' not in request.session and request.user.is_authenticated:
+                        request.session['_auth_user_id'] = request.user.pk
                     request.session.save()
                     response.set_cookie(
                         settings.SESSION_COOKIE_NAME,
