@@ -12,12 +12,13 @@ class SessionStore(SessionBase):
     """
     Implements database session store.
     """
-    def __init__(self, x=None, user_agent=None, ip=None):
+    def __init__(self, session_key=None, user_agent=None, ip=None, client=None):
         super(SessionStore, self).__init__(session_key)
         # Truncate user_agent string to max_length of the CharField
         self.user_agent = user_agent[:200] if user_agent else user_agent
         self.ip = ip
         self.user_id = None
+        self.client = client
 
     def __setitem__(self, key, value):
         if key == auth.SESSION_KEY:
@@ -74,6 +75,7 @@ class SessionStore(SessionBase):
             user_agent=self.user_agent,
             user_id=self.user_id,
             ip=self.ip,
+            client=self.client,
         )
         using = router.db_for_write(Session, instance=obj)
         try:
